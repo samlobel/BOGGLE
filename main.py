@@ -6,6 +6,22 @@
 Takes in a string, which is tab separated and newline separated, and outputs
 a graph, in a to-be-determined format. 
 """
+
+
+# import marisa_trie as trie
+from pytrie import SortedStringTrie as trie
+
+from time import time
+
+words = open('englishWords.txt', 'r')
+wordlines = words.readlines()
+wordlines = [l.strip() for l in wordlines]
+one = [1 for i in xrange(len(wordlines))]
+zipped = zip(wordlines, one)
+T = trie(zipped)
+
+
+
 def boardToGraph(board):
 	rows = board.split('\n')
 	matrix = [row.split('\t') for row in rows]
@@ -44,21 +60,20 @@ def boardToGraph(board):
 
 
 def is_prefix(string):
+
+	result = (len(T.items(prefix=string)) != 0)
+	# print "string: " + string + " is " + str(result)
+	return result
 	# return True
-	if len(string) <=8:
-		return True
-	return False
+	# if len(string) <=8:
+	# 	return True
+	# return False
 
 def is_word(string):
-	if string == "stevie":
-		return True
-	if string == "stevia":
-		return True
-	if string == "magic":
-		return True
-	return False
-	return True
-
+	has = T.has_key(string)
+	# if has:
+	# 	print string + " is a word"
+	return has
 
 def dfs(node_dict, string_so_far, ids_so_far, master_set):
 	if len(string_so_far) >=4 and is_word(string_so_far):
@@ -100,7 +115,7 @@ def words_from_board(board):
 # 							 "1d\t2d\t3d\t4d\t5d\n" +\
 # 							 "1e\t2e\t3e\t4e\t5e"
 
-
+start = time()
 input_string = "s\tt\te\tz\tz\n" +\
 							 "z\tz\tv\tz\tz\n" +\
 							 "z\te\ti\tz\tz\n" +\
@@ -112,6 +127,12 @@ s = words_from_board(input_string)
 print "\n\n\n\n\n"
 for i in s:
 	print i
+
+
+print "time taken is " + str(time() - start)
+
+
+# print is_word("cereal")
 
 
 
