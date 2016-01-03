@@ -25,28 +25,28 @@ T = trie(zipped)
 def boardToGraph(board):
 	rows = board.split('\n')
 	matrix = [row.split('\t') for row in rows]
-	if len(matrix) != 5 or len(matrix[0]) != 5:
+	if len(matrix) != 4 or len(matrix[0]) != 4:
 		print matrix
 		print "something is wrong"
 		raise Exception("Something is wrong")
 
 	node_set = set()
 	node_dict = {}
-	for i in range(25):
+	for i in range(16):
 		d = {}
-		r = i%5
-		c=int(i/5)
+		r = i%4
+		c=int(i/4)
 		entry = matrix[r][c]
 		d['id'] = i
 		d['val'] = entry
 		neighbors = set()
-		rs = [p for p in [r-1,r,r+1] if p >=0 and p <5]
-		cs = [p for p in [c-1,c,c+1] if p >=0 and p <5]
+		rs = [p for p in [r-1,r,r+1] if p >=0 and p <4]
+		cs = [p for p in [c-1,c,c+1] if p >=0 and p <4]
 		for row in rs:
 			for col in cs:
 				if row==r and col==c:
 					continue
-				new_id = row + col*5
+				new_id = row + col*4
 				neighbors.add(new_id)
 		d['neighbors'] = neighbors
 		node_dict[i]=d
@@ -97,7 +97,7 @@ def dfs(node_dict, string_so_far, ids_so_far, master_set):
 def words_from_board(board):
 	graph = boardToGraph(board)
 	master_set = set()
-	for i in range(25):
+	for i in range(16):
 		print str(i)
 		print "\n"
 		node = graph[i]
@@ -116,18 +116,27 @@ def words_from_board(board):
 # 							 "1e\t2e\t3e\t4e\t5e"
 
 start = time()
-input_string = "s\tt\te\tz\tz\n" +\
-							 "z\tz\tv\tz\tz\n" +\
-							 "z\te\ti\tz\tz\n" +\
-							 "z\tm\ta\tz\tz\n" +\
-							 "z\ta\tg\ti\tc"
+# input_string = "qu\te\tn\tt\te\n" +\
+# 							 "s\tr\te\ts\ta\n" +\
+# 							 "p\te\ti\tc\tr\n" +\
+# 							 "a\tb\tt\te\tr\n" +\
+# 							 "z\ts\ts\ti\tc"
+
+input_string = "l\to\tr\ts\n" +\
+							 "v\te\te\tp\n" +\
+							 "h\tl\ti\tn\n" +\
+							 "y\tn\ts\te"
 
 s = words_from_board(input_string)
+l_s = list(s)
+l_s.sort(key=len, reverse=True)
 
 print "\n\n\n\n\n"
-for i in s:
+for i in l_s:
 	print i
-
+print "words found: " + str(len(s))
+points = sum([max(0, len(w)-3) for w in s])
+print "total points: " + str(points)
 
 print "time taken is " + str(time() - start)
 
